@@ -16,6 +16,22 @@ layout_uv() {
         uv venv --python "$uv_python_version"
     fi
 
+    # Sync dependencies if project files exist
+    if [[ -f pyproject.toml ]] || [[ -f requirements.txt ]]; then
+        # Watch files to trigger re-sync on changes
+        watch_file pyproject.toml 2>/dev/null || true
+        watch_file uv.lock 2>/dev/null || true
+        watch_file requirements.txt 2>/dev/null || true
+
+        log_status "Syncing dependencies..."
+        if [[ -f pyproject.toml ]]; then
+            # Try frozen sync first (fast), fall back to full sync if needed
+            uv sync --frozen 2>/dev/null || uv sync
+        elif [[ -f requirements.txt ]]; then
+            uv pip install -r requirements.txt
+        fi
+    fi
+
     # Activate the virtual environment
     export VIRTUAL_ENV="$PWD/.venv"
     PATH_add "$VIRTUAL_ENV/bin"
@@ -23,5 +39,5 @@ layout_uv() {
     # Set Python-related environment variables
     export UV_PROJECT_ENVIRONMENT="$VIRTUAL_ENV"
 
-    log_status "your uv environment is activated: $VIRTUAL_ENV"
+    log_status "uv environment is activated: $VIRTUAL_ENV"
 }
