@@ -68,10 +68,20 @@ formula = <<~RUBY
 
     def post_install
       # Automatically install the direnv function to user's config
+      return if ENV["HOMEBREW_SANDBOX"]
+
       direnv_lib = "\#{Dir.home}/.config/direnv/lib"
-      FileUtils.mkdir_p(direnv_lib)
-      FileUtils.cp("\#{pkgshare}/layout_uv.sh", "\#{direnv_lib}/layout_uv.sh")
-      ohai "✓ layout_uv function installed to \#{direnv_lib}/layout_uv.sh"
+      target_file = "\#{direnv_lib}/layout_uv.sh"
+      source_file = "\#{pkgshare}/layout_uv.sh"
+
+      begin
+        FileUtils.mkdir_p(direnv_lib)
+        FileUtils.cp(source_file, target_file)
+        ohai "✓ layout_uv function installed to \#{target_file}"
+      rescue => e
+        opoo "Could not auto-install layout_uv function: \#{e.message}"
+        opoo "Run 'install-layout-uv' manually to complete installation"
+      end
     end
 
     test do
