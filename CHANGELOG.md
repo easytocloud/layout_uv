@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/easytocloud/layout_uv/compare/v1.0.2...v1.1.0) (2025-11-12)
+
+
+### Features
+
+* layout_uv with one-command installation ([fff668e](https://github.com/easytocloud/layout_uv/commit/fff668e99831ee6f5f717d67d2ab36258d352196))
+
 ## [1.0.2](https://github.com/easytocloud/layout_uv/compare/v1.0.1...v1.0.2) (2025-11-12)
 
 
