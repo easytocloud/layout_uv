@@ -33,7 +33,7 @@ jobs:
 
       - name: Release layout_uv to easytocloud/homebrew-tap
         if: steps.semantic.outputs.new_release_published == 'true'
-        uses: Justintime50/homebrew-releaser@v1
+        uses: Justintime50/homebrew-releaser@v2
         with:
           homebrew_owner: easytocloud
           homebrew_tap: homebrew-tap
