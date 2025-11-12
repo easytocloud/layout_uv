@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/easytocloud/layout_uv/compare/v1.1.5...v1.2.0) (2025-11-12)
+
+
+### Features
+
+* simplified installation with caveats message ([4a26537](https://github.com/easytocloud/layout_uv/commit/4a2653776390013d5ccc7878447921d9bf8e9641))
+
 ## [1.1.5](https://github.com/easytocloud/layout_uv/compare/v1.1.4...v1.1.5) (2025-11-12)
 
 
