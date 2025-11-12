@@ -35,11 +35,17 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.load-github-credentials.outputs.HOMEBREW_TAP_GITHUB_TOKEN  }}
 
+      - name: Wait for release to be available
+        if: steps.semantic.outputs.new_release_published == 'true'
+        run: |
+          echo "Waiting for GitHub to generate release tarball..."
+          sleep 10
+
       - name: Generate formula with post_install
         if: steps.semantic.outputs.new_release_published == 'true'
         run: |
-          VERSION=${{ steps.semantic.outputs.new_release_version }}
           ruby .github/scripts/update-formula.rb > layout_uv.rb
+          cat layout_uv.rb
         env:
           VERSION: v${{ steps.semantic.outputs.new_release_version }}
 

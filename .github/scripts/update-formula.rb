@@ -2,7 +2,8 @@
 # Script to update Homebrew formula with post_install hook
 
 require 'digest'
-require 'open-uri'
+require 'net/http'
+require 'uri'
 
 version = ENV['VERSION'] || abort("VERSION environment variable required")
 repo_name = "layout_uv"
@@ -10,11 +11,46 @@ github_user = "easytocloud"
 
 # Download tarball and calculate SHA256
 url = "https://github.com/#{github_user}/#{repo_name}/archive/refs/tags/#{version}.tar.gz"
-puts "Downloading #{url}..."
-tarball = URI.open(url).read
-sha256 = Digest::SHA256.hexdigest(tarball)
+puts "Waiting for release tarball to be available..."
+puts "URL: #{url}"
 
-puts "SHA256: #{sha256}"
+# Retry logic to wait for GitHub to generate the tarball
+max_retries = 10
+retry_delay = 5
+sha256 = nil
+
+max_retries.times do |attempt|
+  begin
+    uri = URI(url)
+    response = Net::HTTP.get_response(uri)
+
+    if response.is_a?(Net::HTTPSuccess)
+      tarball = response.body
+      sha256 = Digest::SHA256.hexdigest(tarball)
+      puts "SHA256: #{sha256}"
+      break
+    elsif response.is_a?(Net::HTTPRedirection)
+      # Follow redirect
+      location = response['location']
+      uri = URI(location)
+      response = Net::HTTP.get_response(uri)
+      if response.is_a?(Net::HTTPSuccess)
+        tarball = response.body
+        sha256 = Digest::SHA256.hexdigest(tarball)
+        puts "SHA256: #{sha256}"
+        break
+      end
+    end
+
+    puts "Attempt #{attempt + 1}/#{max_retries}: Tarball not ready yet, waiting #{retry_delay}s..."
+    sleep retry_delay
+  rescue => e
+    puts "Attempt #{attempt + 1}/#{max_retries}: Error: #{e.message}"
+    sleep retry_delay
+  end
+end
+
+abort("Failed to download tarball after #{max_retries} attempts") unless sha256
 
 # Generate formula
 formula = <<~RUBY
