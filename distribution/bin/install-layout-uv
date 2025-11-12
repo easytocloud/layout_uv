@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Auto-installer for layout_uv direnv function
+set -e
+
+# Try multiple possible locations for the source file
+POSSIBLE_LOCATIONS=(
+    "$(dirname "${BASH_SOURCE[0]}")/../share/layout_uv/layout_uv.sh"
+    "$(brew --prefix layout_uv 2>/dev/null)/share/layout_uv/layout_uv.sh"
+    "/usr/local/share/layout_uv/layout_uv.sh"
+    "/opt/homebrew/share/layout_uv/layout_uv.sh"
+)
+
+SOURCE_FILE=""
+for location in "${POSSIBLE_LOCATIONS[@]}"; do
+    if [ -f "$location" ]; then
+        SOURCE_FILE="$location"
+        break
+    fi
+done
+
+if [ -z "$SOURCE_FILE" ]; then
+    echo "Error: Could not find layout_uv.sh" >&2
+    exit 1
+fi
+
+DIRENV_LIB_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/direnv/lib"
+TARGET_FILE="$DIRENV_LIB_DIR/layout_uv.sh"
+
+# Create direnv lib directory if it doesn't exist
+mkdir -p "$DIRENV_LIB_DIR"
+
+# Copy the function file
+cp "$SOURCE_FILE" "$TARGET_FILE"
+echo "✓ layout_uv function installed to: $TARGET_FILE"
+echo ""
+echo "You can now use 'layout uv' in your .envrc files!"

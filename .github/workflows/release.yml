@@ -65,14 +65,12 @@ jobs:
           # Required - string.
           install: |
             pkgshare.install "distribution/lib/layout_uv.sh"
+            bin.install "distribution/bin/install-layout-uv"
 
-          # Post-install script to automatically set up direnv integration
-          # Optional - multiline string.
-          post_install: |
             direnv_lib = "#{Dir.home}/.config/direnv/lib"
             FileUtils.mkdir_p(direnv_lib)
             FileUtils.cp("#{pkgshare}/layout_uv.sh", "#{direnv_lib}/layout_uv.sh")
-            ohai "layout_uv function installed to #{direnv_lib}/layout_uv.sh"
+            ohai "✓ layout_uv function installed to #{direnv_lib}/layout_uv.sh"
 
           # Custom test command for your formula so you can run `brew test`.
           # Optional - string.
