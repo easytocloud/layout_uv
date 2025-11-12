@@ -1,3 +1,10 @@
+## [1.1.5](https://github.com/easytocloud/layout_uv/compare/v1.1.4...v1.1.5) (2025-11-12)
+
+
+### Bug Fixes
+
+* improved brew formula ([fa52267](https://github.com/easytocloud/layout_uv/commit/fa5226735f80ff332bee7a80b4e72a4b849bd447))
+
 ## [1.1.4](https://github.com/easytocloud/layout_uv/compare/v1.1.3...v1.1.4) (2025-11-12)
 
 
