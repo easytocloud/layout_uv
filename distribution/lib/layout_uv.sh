@@ -23,5 +23,5 @@ layout_uv() {
     # Set Python-related environment variables
     export UV_PROJECT_ENVIRONMENT="$VIRTUAL_ENV"
 
-    log_status "uv environment activated: $VIRTUAL_ENV"
+    log_status "your uv environment is activated: $VIRTUAL_ENV"
 }
