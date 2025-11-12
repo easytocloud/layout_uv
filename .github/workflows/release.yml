@@ -47,7 +47,10 @@ jobs:
         if: steps.semantic.outputs.new_release_published == 'true'
         run: |
           ruby .github/scripts/update-formula.rb > layout_uv.rb
+          echo "=== Generated Formula ==="
           cat layout_uv.rb
+          echo "=== Verifying Ruby syntax ==="
+          ruby -c layout_uv.rb
         env:
           VERSION: v${{ steps.semantic.outputs.new_release_version }}
 

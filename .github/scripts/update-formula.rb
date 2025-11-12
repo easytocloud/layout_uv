@@ -11,8 +11,8 @@ github_user = "easytocloud"
 
 # Download tarball and calculate SHA256
 url = "https://github.com/#{github_user}/#{repo_name}/archive/refs/tags/#{version}.tar.gz"
-puts "Waiting for release tarball to be available..."
-puts "URL: #{url}"
+STDERR.puts "Waiting for release tarball to be available..."
+STDERR.puts "URL: #{url}"
 
 # Retry logic to wait for GitHub to generate the tarball
 max_retries = 10
@@ -27,7 +27,7 @@ max_retries.times do |attempt|
     if response.is_a?(Net::HTTPSuccess)
       tarball = response.body
       sha256 = Digest::SHA256.hexdigest(tarball)
-      puts "SHA256: #{sha256}"
+      STDERR.puts "SHA256: #{sha256}"
       break
     elsif response.is_a?(Net::HTTPRedirection)
       # Follow redirect
@@ -37,15 +37,15 @@ max_retries.times do |attempt|
       if response.is_a?(Net::HTTPSuccess)
         tarball = response.body
         sha256 = Digest::SHA256.hexdigest(tarball)
-        puts "SHA256: #{sha256}"
+        STDERR.puts "SHA256: #{sha256}"
         break
       end
     end
 
-    puts "Attempt #{attempt + 1}/#{max_retries}: Tarball not ready yet, waiting #{retry_delay}s..."
+    STDERR.puts "Attempt #{attempt + 1}/#{max_retries}: Tarball not ready yet, waiting #{retry_delay}s..."
     sleep retry_delay
   rescue => e
-    puts "Attempt #{attempt + 1}/#{max_retries}: Error: #{e.message}"
+    STDERR.puts "Attempt #{attempt + 1}/#{max_retries}: Error: #{e.message}"
     sleep retry_delay
   end
 end
@@ -81,4 +81,4 @@ formula = <<~RUBY
 RUBY
 
 puts formula
-puts "\nFormula generated successfully!"
+STDERR.puts "\nFormula generated successfully!"
