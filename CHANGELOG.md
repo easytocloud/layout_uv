@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/easytocloud/layout_uv/compare/v1.2.1...v1.3.0) (2025-11-12)
+
+
+### Features
+
+* add automatic dependency syncing with watch_file support ([0c089b8](https://github.com/easytocloud/layout_uv/commit/0c089b88ab930dd19fca002d5a85a1a20901a08a))
+
 ## [1.2.1](https://github.com/easytocloud/layout_uv/compare/v1.2.0...v1.2.1) (2025-11-12)
 
 
