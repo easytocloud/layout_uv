@@ -35,11 +35,13 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.load-github-credentials.outputs.HOMEBREW_TAP_GITHUB_TOKEN  }}
 
-      - name: Wait for release to be available
+      - name: Wait for GitHub to generate source tarball
         if: steps.semantic.outputs.new_release_published == 'true'
         run: |
-          echo "Waiting for GitHub to generate release tarball..."
-          sleep 10
+          echo "Waiting for GitHub to generate source tarball..."
+          echo "Version: v${{ steps.semantic.outputs.new_release_version }}"
+          echo "Tarball will be at: https://github.com/easytocloud/layout_uv/archive/refs/tags/v${{ steps.semantic.outputs.new_release_version }}.tar.gz"
+          sleep 15
 
       - name: Generate formula with post_install
         if: steps.semantic.outputs.new_release_published == 'true'
