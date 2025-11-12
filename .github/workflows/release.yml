@@ -67,11 +67,6 @@ jobs:
             pkgshare.install "distribution/lib/layout_uv.sh"
             bin.install "distribution/bin/install-layout-uv"
 
-            direnv_lib = "#{Dir.home}/.config/direnv/lib"
-            FileUtils.mkdir_p(direnv_lib)
-            FileUtils.cp("#{pkgshare}/layout_uv.sh", "#{direnv_lib}/layout_uv.sh")
-            ohai "✓ layout_uv function installed to #{direnv_lib}/layout_uv.sh"
-
           # Custom test command for your formula so you can run `brew test`.
           # Optional - string.
           test: 'assert_predicate pkgshare/"layout_uv.sh", :exist?'
