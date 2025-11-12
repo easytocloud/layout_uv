@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/easytocloud/layout_uv/compare/v1.2.0...v1.2.1) (2025-11-12)
+
+
+### Bug Fixes
+
+* releaser v2 ([476ba07](https://github.com/easytocloud/layout_uv/commit/476ba07953320cdb28d2a4613c5e3c8df9cd1a96))
+
 # [1.2.0](https://github.com/easytocloud/layout_uv/compare/v1.1.5...v1.2.0) (2025-11-12)
 
 
