@@ -23,15 +23,10 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ```bash
 brew install easytocloud/tap/layout_uv
-```
-
-That's it! The `layout_uv` function is **automatically installed** to `~/.config/direnv/lib/layout_uv.sh` during installation. You can start using it immediately.
-
-If you ever need to reinstall the direnv function:
-
-```bash
 install-layout-uv
 ```
+
+The first command installs the package, and the second command installs the direnv function to `~/.config/direnv/lib/layout_uv.sh`.
 
 ## Usage
 

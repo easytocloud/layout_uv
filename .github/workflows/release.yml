@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-    
+
 jobs:
   homebrew-releaser:
     runs-on: ubuntu-latest
@@ -15,10 +15,6 @@ jobs:
       - name: Configure 1Password Service Account
         uses: 1password/load-secrets-action/configure@v1
         with:
-          # Persist the 1Password Service Account Authorization token
-          # for next steps.
-          # Keep in mind that every single step in the job is now
-          # able to access the token.
           service-account-token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
       - name: Load GitHub credentials
@@ -27,7 +23,7 @@ jobs:
         with:
           export-env: false
         env:
-          HOMEBREW_TAP_GITHUB_TOKEN: op://CICD/github-easytocloud-brew/credential 
+          HOMEBREW_TAP_GITHUB_TOKEN: op://CICD/github-easytocloud-brew/credential
 
       - name: Semantic Release
         id: semantic
@@ -35,40 +31,30 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.load-github-credentials.outputs.HOMEBREW_TAP_GITHUB_TOKEN  }}
 
-      - name: Wait for GitHub to generate source tarball
+      - name: Release layout_uv to easytocloud/homebrew-tap
         if: steps.semantic.outputs.new_release_published == 'true'
-        run: |
-          echo "Waiting for GitHub to generate source tarball..."
-          echo "Version: v${{ steps.semantic.outputs.new_release_version }}"
-          echo "Tarball will be at: https://github.com/easytocloud/layout_uv/archive/refs/tags/v${{ steps.semantic.outputs.new_release_version }}.tar.gz"
-          sleep 15
-
-      - name: Generate formula with post_install
-        if: steps.semantic.outputs.new_release_published == 'true'
-        run: |
-          ruby .github/scripts/update-formula.rb > layout_uv.rb
-          echo "=== Generated Formula ==="
-          cat layout_uv.rb
-          echo "=== Verifying Ruby syntax ==="
-          ruby -c layout_uv.rb
-        env:
-          VERSION: v${{ steps.semantic.outputs.new_release_version }}
-
-      - name: Checkout homebrew tap
-        if: steps.semantic.outputs.new_release_published == 'true'
-        uses: actions/checkout@v4
+        uses: Justintime50/homebrew-releaser@v1
         with:
-          repository: easytocloud/homebrew-tap
-          token: ${{ steps.load-github-credentials.outputs.HOMEBREW_TAP_GITHUB_TOKEN }}
-          path: homebrew-tap
+          homebrew_owner: easytocloud
+          homebrew_tap: homebrew-tap
+          formula_folder: Formula
+          github_token: ${{ steps.load-github-credentials.outputs.HOMEBREW_TAP_GITHUB_TOKEN }}
+          commit_owner: homebrew-releaser
+          commit_email: homebrew-releaser@easytocloud.com
 
-      - name: Update formula in tap
-        if: steps.semantic.outputs.new_release_published == 'true'
-        run: |
-          cp layout_uv.rb homebrew-tap/Formula/layout_uv.rb
-          cd homebrew-tap
-          git config user.name "homebrew-releaser"
-          git config user.email "homebrew-releaser@easytocloud.com"
-          git add Formula/layout_uv.rb
-          git commit -m "layout_uv ${{ steps.semantic.outputs.new_release_version }}"
-          git push
+          install: |
+            pkgshare.install "distribution/lib/layout_uv.sh"
+            bin.install "distribution/bin/install-layout-uv"
+
+          caveats: |
+            To complete installation, run:
+              install-layout-uv
+
+            This will install the layout_uv function to ~/.config/direnv/lib/
+            Then you can use 'layout uv' in your .envrc files.
+
+          test: 'assert_predicate pkgshare/"layout_uv.sh", :exist?'
+
+          update_readme_table: true
+          skip_commit: false
+          debug: true
