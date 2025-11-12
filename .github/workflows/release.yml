@@ -3,7 +3,7 @@
 on:
   push:
     branches:
-      - changethis
+      - main
     
 jobs:
   homebrew-releaser:
@@ -35,7 +35,7 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.load-github-credentials.outputs.HOMEBREW_TAP_GITHUB_TOKEN  }}
 
-      - name: Release akskrotate to easytocloud/homebrew-tap
+      - name: Release layout_uv to easytocloud/homebrew-tap
         if: steps.semantic.outputs.new_release_published == 'true'
         uses: Justintime50/homebrew-releaser@v1
         with:
@@ -64,11 +64,19 @@ jobs:
           # Custom install command for your formula.
           # Required - string.
           install: |
-		bin.install "distribution/bin/xxx" 
-		zsh_completion.install "distribution/completions/_xxx"
+            pkgshare.install "distribution/lib/layout_uv.sh"
+
+          # Post-install script to automatically set up direnv integration
+          # Optional - multiline string.
+          post_install: |
+            direnv_lib = "#{Dir.home}/.config/direnv/lib"
+            FileUtils.mkdir_p(direnv_lib)
+            FileUtils.cp("#{pkgshare}/layout_uv.sh", "#{direnv_lib}/layout_uv.sh")
+            ohai "layout_uv function installed to #{direnv_lib}/layout_uv.sh"
 
           # Custom test command for your formula so you can run `brew test`.
           # Optional - string.
+          test: 'assert_predicate pkgshare/"layout_uv.sh", :exist?'
 
           # Adds URL and checksum targets for different OS and architecture pairs. Using this option assumes 
           # a tar archive exists on your GitHub repo with the following URL pattern (this cannot be customized):
